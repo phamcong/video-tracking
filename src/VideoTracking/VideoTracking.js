@@ -36,9 +36,14 @@ function VideoTracking() {
         (function loop() {
           if (!$this.paused && !$this.ended) {
             const timming = $this.currentTime;
-            const foundPersonBox = getTrackingBox(personBoxes, timming * 1000);         
-            console.log(foundPersonBox);   
-            foundPersonBox && setCurrentPersonBox(foundPersonBox);
+            const foundPersonBox = getTrackingBox(personBoxes, timming * 1000);    
+            console.log(foundPersonBox);        
+            if (!foundPersonBox || !boxChanged(currentPersonBox, foundPersonBox)) {
+              setCurrentPersonBox(initPersonBox);
+            }
+            if (foundPersonBox && boxChanged(currentPersonBox, foundPersonBox)) {
+              setCurrentPersonBox(foundPersonBox);
+            }
             setTimeout(loop, 1000 / 30); // drawing at 30fps
           }
         })();
@@ -50,20 +55,19 @@ function VideoTracking() {
   useEffect(() => {
     const box = currentPersonBox.box;
     const { bottomRight, topLeft } = box;
-    setCanvasTop(topLeft.x);
-    setCanvasLeft(topLeft.y);
+    setCanvasTop(topLeft.y);
+    setCanvasLeft(topLeft.x);
     setCanvasWidth(bottomRight.x - topLeft.x);
     setCanvasHeight(bottomRight.y - topLeft.y);
   }, [currentPersonBox]);
 
   const getTrackingBox = (trackingBoxes, timming) => {
-    const foundBox = trackingBoxes.find((item, index) => {
-      if (index >= trackingBoxes.length - 1) return item.time <= timming;
-      return item.time <= timming && trackingBoxes[index + 1].time >= timming
-    })
+    const foundBox = trackingBoxes.find(item => item.time >= timming - 100 && item.time <= timming + 100)
 
     return foundBox;
   }
+
+  const boxChanged = (prevBox, nextBox) => JSON.stringify(prevBox) !== JSON.stringify(nextBox);
 
   return (
     <div className="video-container">
