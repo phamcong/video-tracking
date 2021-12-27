@@ -3,13 +3,46 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.video-wrapper {
-  position: relative;
-  canvas {
-    position: absolute;
-    top: 96px;
-    left: 646px;
+  .video-wrapper {
+    position: relative;
+    
+    .box-label {
+      position: absolute;          
+      border-radius: 3px;
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      padding: 0px 5px;
+    }
+
+    .person-box-label {
+      @extend .box-label;
+      color: white;
+      background-color: orange;
+    }
+
+    .car-box-label {
+      @extend .box-label;
+      color: white;
+      background-color: red;
+    }
+  
+    canvas {
+      position: absolute;
+      top: 96px;
+      left: 646px;
+    }
+    
+    canvas.person-box {
+      border: 0.15em solid orange;
+      border-radius: 5px;
+      border-top-left-radius: 0px;
+    }
+
+    canvas.car-box {
+      border: 0.15em solid red;
+      border-radius: 5px;
+      border-top-left-radius: 0px;
+    }
   }
 }
